@@ -237,21 +237,21 @@ func evalIntegerInfixExpression(
 	case "/":
 		return &object.Integer{Val: leftVal.Div(leftVal, rightVal)}
 	case "<":
-		return nativeBoolToBooleanObject(leftVal < rightVal)
+		return nativeBoolToBooleanObject(leftVal.Cmp(rightVal) == -1)
 	case ">":
-		return nativeBoolToBooleanObject(leftVal > rightVal)
+		return nativeBoolToBooleanObject(leftVal.Cmp(rightVal) == 1)
 	case "==":
-		return nativeBoolToBooleanObject(leftVal == rightVal)
+		return nativeBoolToBooleanObject(leftVal.Cmp(rightVal) == 0)
 	case "!=":
 		return nativeBoolToBooleanObject(leftVal != rightVal)
 	case "<=":
-		return nativeBoolToBooleanObject(leftVal <= rightVal)
+		return nativeBoolToBooleanObject(leftVal.Cmp(rightVal) == 0 || leftVal.Cmp(rightVal) == -1)
 	case ">=":
-		return nativeBoolToBooleanObject(leftVal >= rightVal)
+		return nativeBoolToBooleanObject(leftVal.Cmp(rightVal) == 0 || leftVal.Cmp(rightVal) == 1)
 	case "<<":
-		return &object.Integer{Val: leftVal << rightVal}
+		return &object.Integer{Val: leftVal.Lsh(leftVal, uint(rightVal.Uint64()))}
 	case ">>":
-		return &object.Integer{Val: leftVal >> rightVal}
+		return &object.Integer{Val: leftVal.Rsh(leftVal, uint(rightVal.Uint64()))}
 
 	default:
 		return newError("unknown operator: %s %s %s",
@@ -401,7 +401,7 @@ func evalArrayIndexExpression(array, index object.Object) object.Object {
 	max := int64(len(arrayObject.Elements) - 1)
 	var newMax = big.NewInt(max)
 
-	if idx < 0 || idx > newMax {
+	if idx.Cmp(0) == -1 || idx.Cmp(newMax) == 1 {
 		return NULL
 	}
 
