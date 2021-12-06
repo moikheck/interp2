@@ -2,6 +2,7 @@ package evaluator
 
 import (
 	"fmt"
+	"math/big"
 	"monkey/ast"
 	"monkey/object"
 )
@@ -41,7 +42,8 @@ func Eval(node ast.Node, env *object.Environment) object.Object {
 
 	// Expressions
 	case *ast.IntegerLiteral:
-		return &object.Integer{Value: node.Value}
+		var intCon = big.NewInt(node.Value)
+		return &object.Integer{Val: intCon}
 
 	case *ast.StringLiteral:
 		return &object.String{Value: node.Value}
@@ -214,26 +216,26 @@ func evalMinusPrefixOperatorExpression(right object.Object) object.Object {
 		return newError("unknown operator: -%s", right.Type())
 	}
 
-	value := right.(*object.Integer).Value
-	return &object.Integer{Value: -value}
+	value := right.(*object.Integer).Val
+	return &object.Integer{Val: value.Neg(value)}
 }
 
 func evalIntegerInfixExpression(
 	operator string,
 	left, right object.Object,
 ) object.Object {
-	leftVal := left.(*object.Integer).Value
-	rightVal := right.(*object.Integer).Value
+	leftVal := left.(*object.Integer).Val
+	rightVal := right.(*object.Integer).Val
 
 	switch operator {
 	case "+":
-		return &object.Integer{Value: leftVal + rightVal}
+		return &object.Integer{Val: leftVal.Add(leftVal, rightVal)}
 	case "-":
-		return &object.Integer{Value: leftVal - rightVal}
+		return &object.Integer{Val: leftVal.Sub(leftVal, rightVal)}
 	case "*":
-		return &object.Integer{Value: leftVal * rightVal}
+		return &object.Integer{Val: leftVal.Mul(leftVal, rightVal)}
 	case "/":
-		return &object.Integer{Value: leftVal / rightVal}
+		return &object.Integer{Val: leftVal.Div(leftVal, rightVal)}
 	case "<":
 		return nativeBoolToBooleanObject(leftVal < rightVal)
 	case ">":
@@ -247,9 +249,9 @@ func evalIntegerInfixExpression(
 	case ">=":
 		return nativeBoolToBooleanObject(leftVal >= rightVal)
 	case "<<":
-		return &object.Integer{Value: leftVal << rightVal}
+		return &object.Integer{Val: leftVal << rightVal}
 	case ">>":
-		return &object.Integer{Value: leftVal >> rightVal}
+		return &object.Integer{Val: leftVal >> rightVal}
 
 	default:
 		return newError("unknown operator: %s %s %s",
@@ -397,8 +399,9 @@ func evalArrayIndexExpression(array, index object.Object) object.Object {
 	arrayObject := array.(*object.Array)
 	idx := index.(*object.Integer).Value
 	max := int64(len(arrayObject.Elements) - 1)
+	var newMax = big.NewInt(max)
 
-	if idx < 0 || idx > max {
+	if idx < 0 || idx > newMax {
 		return NULL
 	}
 

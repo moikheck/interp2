@@ -1,6 +1,7 @@
 package evaluator
 
 import (
+	"fmt"
 	"monkey/lexer"
 	"monkey/object"
 	"monkey/parser"
@@ -526,7 +527,7 @@ func TestHashLiterals(t *testing.T) {
 		(&object.String{Value: "one"}).HashKey():   1,
 		(&object.String{Value: "two"}).HashKey():   2,
 		(&object.String{Value: "three"}).HashKey(): 3,
-		(&object.Integer{Value: 4}).HashKey():      4,
+		(&object.Integer{Val: 4}).HashKey():        4,
 		TRUE.HashKey():                             5,
 		FALSE.HashKey():                            6,
 	}
@@ -610,7 +611,8 @@ func testIntegerObject(t *testing.T, obj object.Object, expected int64) bool {
 			result.Value, expected)
 		return false
 	}
-
+	var x = 1000000000
+	fmt.Println(x * x * x * x * x)
 	return true
 }
 
