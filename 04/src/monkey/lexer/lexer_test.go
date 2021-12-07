@@ -30,6 +30,8 @@ if (5 < 10) {
 "foo bar"
 [1, 2];
 {"foo": "bar"}
+
+
 1 <= 2
 1 >= 2
 2 << 3
@@ -126,19 +128,20 @@ if (5 < 10) {
 		{token.COLON, ":"},
 		{token.STRING, "bar"},
 		{token.RBRACE, "}"},
-		{token.INT, "1"},
-		{token.LTEQ, "<="},
-		{token.INT, "2"},
-		{token.INT, "1"},
-		{token.GTEQ, ">="},
-		{token.INT, "2"},
-		{token.INT, "2"},
-		{token.LSHIFT, "<<"},
-		{token.INT, "3"},
-		{token.INT, "16"},
-		{token.RSHIFT, ">>"},
-		{token.INT, "3"},
 		{token.EOF, ""},
+		{token.INT, "1"},
+        {token.LTEQ, "<="},
+        {token.INT, "2"},
+        {token.INT, "1"},
+        {token.GTEQ, ">="},
+        {token.INT, "2"},
+        {token.INT, "2"},
+        {token.LSHIFT, "<<"},
+        {token.INT, "3"},
+        {token.INT, "16"},
+        {token.RSHIFT, ">>"},
+        {token.INT, "3"},
+        {token.EOF, ""},
 	}
 
 	l := New(input)

@@ -42,8 +42,7 @@ func Eval(node ast.Node, env *object.Environment) object.Object {
 
 	// Expressions
 	case *ast.IntegerLiteral:
-		var intCon = big.NewInt(node.Value)
-		return &object.Integer{Value: intCon}
+		return &object.Integer{Value: big.NewInt(node.Value)}
 
 	case *ast.StringLiteral:
 		return &object.String{Value: node.Value}
@@ -237,22 +236,21 @@ func evalIntegerInfixExpression(
 	case "/":
 		return &object.Integer{Value: leftVal.Div(leftVal, rightVal)}
 	case "<":
-		return nativeBoolToBooleanObject(leftVal.Cmp(rightVal) == -1)
+		return nativeBoolToBooleanObject(leftVal.Cmp(rightVal) < 0)
 	case ">":
-		return nativeBoolToBooleanObject(leftVal.Cmp(rightVal) == 1)
+		return nativeBoolToBooleanObject(leftVal.Cmp(rightVal) > 0)
+	case ">=":
+		return nativeBoolToBooleanObject(leftVal.Cmp(rightVal) >= 0)
+	case "<=":
+		return nativeBoolToBooleanObject(leftVal.Cmp(rightVal) <= 0)
+	case ">>":
+		return &object.Integer{Value: leftVal.Rsh(leftVal, uint(rightVal.Uint64()))}
+	case "<<":
+		return &object.Integer{Value: leftVal.Lsh(leftVal, uint(rightVal.Uint64()))}
 	case "==":
 		return nativeBoolToBooleanObject(leftVal.Cmp(rightVal) == 0)
 	case "!=":
-		return nativeBoolToBooleanObject(leftVal.Cmp(rightVal) != 0)
-	case "<=":
-		return nativeBoolToBooleanObject(leftVal.Cmp(rightVal) == 0 || leftVal.Cmp(rightVal) == -1)
-	case ">=":
-		return nativeBoolToBooleanObject(leftVal.Cmp(rightVal) == 0 || leftVal.Cmp(rightVal) == 1)
-	case "<<":
-		return &object.Integer{Value: leftVal.Lsh(leftVal, uint(rightVal.Uint64()))}
-	case ">>":
-		return &object.Integer{Value: leftVal.Rsh(leftVal, uint(rightVal.Uint64()))}
-
+		return nativeBoolToBooleanObject(leftVal != rightVal)
 	default:
 		return newError("unknown operator: %s %s %s",
 			left.Type(), operator, right.Type())

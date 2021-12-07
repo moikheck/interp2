@@ -21,6 +21,10 @@ const (
 
 	LT = "<"
 	GT = ">"
+	LTEQ = "<="
+	GTEQ = ">="
+	LSHIFT = "<<"
+	RSHIFT = ">>"
 
 	EQ     = "=="
 	NOT_EQ = "!="
@@ -45,10 +49,6 @@ const (
 	IF       = "IF"
 	ELSE     = "ELSE"
 	RETURN   = "RETURN"
-	LTEQ     = "LTEQ"
-	GTEQ     = "GTEQ"
-	LSHIFT   = "LSHIFT"
-	RSHIFT   = "RSHIFT"
 )
 
 type Token struct {

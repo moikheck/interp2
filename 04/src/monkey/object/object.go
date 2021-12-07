@@ -48,9 +48,9 @@ type Integer struct {
 	Value *big.Int
 }
 
-func New(value int64) *Integer {
+func New(Value int64) *Integer {
 	var bigValue big.Int
-	newValue := bigValue.SetInt64(value)
+	newValue := bigValue.SetInt64(Value)
 	return &Integer{Value: newValue}
 }
 

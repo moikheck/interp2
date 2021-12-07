@@ -211,9 +211,9 @@ func TestParsingInfixExpressions(t *testing.T) {
 		{"true != false", true, "!=", false},
 		{"false == false", false, "==", false},
 		{"1 <= 2;", 1, "<=", 2},
-		{"1 >= 2;", 1, ">=", 2},
-		{"2 << 3;", 2, "<<", 3},
-		{"16 >> 3;", 16, ">>", 3},
+        {"1 >= 2;", 1, ">=", 2},
+        {"2 << 3;", 2, "<<", 3},
+        {"16 >> 3;", 16, ">>", 3},
 	}
 
 	for _, tt := range infixTests {

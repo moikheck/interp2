@@ -14,11 +14,11 @@ const (
 	EQUALS      // ==
 	LESSGREATER // > or <
 	SHIFT
-	SUM     // +
-	PRODUCT // *
-	PREFIX  // -X or !X
-	CALL    // myFunction(X)
-	INDEX   // array[index]
+	SUM         // +
+	PRODUCT     // *
+	PREFIX      // -X or !X
+	CALL        // myFunction(X)
+	INDEX       // array[index]
 )
 
 var precedences = map[token.TokenType]int{
@@ -26,10 +26,10 @@ var precedences = map[token.TokenType]int{
 	token.NOT_EQ:   EQUALS,
 	token.LT:       LESSGREATER,
 	token.GT:       LESSGREATER,
-	token.LTEQ:     LESSGREATER,
-	token.GTEQ:     LESSGREATER,
-	token.LSHIFT:   SHIFT,
-	token.RSHIFT:   SHIFT,
+	token.LTEQ:		LESSGREATER,
+	token.GTEQ:		LESSGREATER,
+	token.LSHIFT:	SHIFT,
+	token.RSHIFT:	SHIFT,
 	token.PLUS:     SUM,
 	token.MINUS:    SUM,
 	token.SLASH:    PRODUCT,
@@ -83,13 +83,14 @@ func New(l *lexer.Lexer) *Parser {
 	p.registerInfix(token.NOT_EQ, p.parseInfixExpression)
 	p.registerInfix(token.LT, p.parseInfixExpression)
 	p.registerInfix(token.GT, p.parseInfixExpression)
+
+	p.registerInfix(token.LPAREN, p.parseCallExpression)
+	p.registerInfix(token.LBRACKET, p.parseIndexExpression)
+
 	p.registerInfix(token.LTEQ, p.parseInfixExpression)
 	p.registerInfix(token.GTEQ, p.parseInfixExpression)
 	p.registerInfix(token.LSHIFT, p.parseInfixExpression)
 	p.registerInfix(token.RSHIFT, p.parseInfixExpression)
-
-	p.registerInfix(token.LPAREN, p.parseCallExpression)
-	p.registerInfix(token.LBRACKET, p.parseIndexExpression)
 
 	// Read two tokens, so curToken and peekToken are both set
 	p.nextToken()

@@ -58,7 +58,6 @@ func (l *Lexer) NextToken() token.Token {
 			l.readChar()
 			literal := string(ch) + string(l.ch)
 			tok = token.Token{Type: token.LSHIFT, Literal: literal}
-
 		} else {
 			tok = newToken(token.LT, l.ch)
 		}
@@ -73,7 +72,6 @@ func (l *Lexer) NextToken() token.Token {
 			l.readChar()
 			literal := string(ch) + string(l.ch)
 			tok = token.Token{Type: token.RSHIFT, Literal: literal}
-
 		} else {
 			tok = newToken(token.GT, l.ch)
 		}
@@ -98,7 +96,6 @@ func (l *Lexer) NextToken() token.Token {
 		tok = newToken(token.LBRACKET, l.ch)
 	case ']':
 		tok = newToken(token.RBRACKET, l.ch)
-
 	case 0:
 		tok.Literal = ""
 		tok.Type = token.EOF
