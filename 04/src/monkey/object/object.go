@@ -45,26 +45,26 @@ type Object interface {
 }
 
 type Integer struct {
-	Val *big.Int
+	Value *big.Int
 }
 
 func New(value int64) *Integer {
 	var bigValue big.Int
 	newValue := bigValue.SetInt64(value)
-	return &Integer{Val: newValue}
+	return &Integer{Value: newValue}
 }
 
-func (i *Integer) Value() (int64, bool) {
-	if i.Val.IsInt64() {
-		return i.Val.Int64(), true
+func (i *Integer) value() (int64, bool) {
+	if i.Value.IsInt64() {
+		return i.Value.Int64(), true
 	}
 	return 0, false
 }
 
 func (i *Integer) Type() ObjectType { return INTEGER_OBJ }
-func (i *Integer) Inspect() string  { return fmt.Sprintf("%d", i.Val) }
+func (i *Integer) Inspect() string  { return fmt.Sprintf("%d", i.Value) }
 func (i *Integer) HashKey() HashKey {
-	result := i.Val.Uint64()
+	result := i.Value.Uint64()
 	return HashKey{Type: i.Type(), Value: result}
 }
 

@@ -43,7 +43,7 @@ func Eval(node ast.Node, env *object.Environment) object.Object {
 	// Expressions
 	case *ast.IntegerLiteral:
 		var intCon = big.NewInt(node.Value)
-		return &object.Integer{Val: intCon}
+		return &object.Integer{Value: intCon}
 
 	case *ast.StringLiteral:
 		return &object.String{Value: node.Value}
@@ -216,26 +216,26 @@ func evalMinusPrefixOperatorExpression(right object.Object) object.Object {
 		return newError("unknown operator: -%s", right.Type())
 	}
 
-	value := right.(*object.Integer).Val
-	return &object.Integer{Val: value.Neg(value)}
+	value := right.(*object.Integer).Value
+	return &object.Integer{Value: value.Neg(value)}
 }
 
 func evalIntegerInfixExpression(
 	operator string,
 	left, right object.Object,
 ) object.Object {
-	leftVal := left.(*object.Integer).Val
-	rightVal := right.(*object.Integer).Val
+	leftVal := left.(*object.Integer).Value
+	rightVal := right.(*object.Integer).Value
 
 	switch operator {
 	case "+":
-		return &object.Integer{Val: leftVal.Add(leftVal, rightVal)}
+		return &object.Integer{Value: leftVal.Add(leftVal, rightVal)}
 	case "-":
-		return &object.Integer{Val: leftVal.Sub(leftVal, rightVal)}
+		return &object.Integer{Value: leftVal.Sub(leftVal, rightVal)}
 	case "*":
-		return &object.Integer{Val: leftVal.Mul(leftVal, rightVal)}
+		return &object.Integer{Value: leftVal.Mul(leftVal, rightVal)}
 	case "/":
-		return &object.Integer{Val: leftVal.Div(leftVal, rightVal)}
+		return &object.Integer{Value: leftVal.Div(leftVal, rightVal)}
 	case "<":
 		return nativeBoolToBooleanObject(leftVal.Cmp(rightVal) == -1)
 	case ">":
@@ -243,15 +243,15 @@ func evalIntegerInfixExpression(
 	case "==":
 		return nativeBoolToBooleanObject(leftVal.Cmp(rightVal) == 0)
 	case "!=":
-		return nativeBoolToBooleanObject(leftVal != rightVal)
+		return nativeBoolToBooleanObject(leftVal.Cmp(rightVal) != 0)
 	case "<=":
 		return nativeBoolToBooleanObject(leftVal.Cmp(rightVal) == 0 || leftVal.Cmp(rightVal) == -1)
 	case ">=":
 		return nativeBoolToBooleanObject(leftVal.Cmp(rightVal) == 0 || leftVal.Cmp(rightVal) == 1)
 	case "<<":
-		return &object.Integer{Val: leftVal.Lsh(leftVal, uint(rightVal.Uint64()))}
+		return &object.Integer{Value: leftVal.Lsh(leftVal, uint(rightVal.Uint64()))}
 	case ">>":
-		return &object.Integer{Val: leftVal.Rsh(leftVal, uint(rightVal.Uint64()))}
+		return &object.Integer{Value: leftVal.Rsh(leftVal, uint(rightVal.Uint64()))}
 
 	default:
 		return newError("unknown operator: %s %s %s",
@@ -397,11 +397,10 @@ func evalIndexExpression(left, index object.Object) object.Object {
 
 func evalArrayIndexExpression(array, index object.Object) object.Object {
 	arrayObject := array.(*object.Array)
-	idx := index.(*object.Integer).Value
+	idx := index.(*object.Integer).Value.Int64()
 	max := int64(len(arrayObject.Elements) - 1)
-	var newMax = big.NewInt(max)
 
-	if idx.Cmp(0) == -1 || idx.Cmp(newMax) == 1 {
+	if idx < int64(0) || idx > max {
 		return NULL
 	}
 
